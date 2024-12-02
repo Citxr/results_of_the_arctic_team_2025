@@ -57,7 +57,7 @@
 
 /* Стили кнопки */
 .share-button {
-    margin-top: 0 auto;
+    margin-top: auto;
     padding: 5px 10px;
     background: transparent;
     color: #fff;
