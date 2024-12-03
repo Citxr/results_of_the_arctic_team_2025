@@ -6,6 +6,9 @@
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "@vkontakte/vk-bridge": "^2.15.3",
+    "@vkontakte/vk-tunnel": "^0.1.4",
+    "cross-env": "^7.0.3",
     "fullpage.js": "^4.0.31",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -15,10 +18,11 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts --openssl-legacy-provider start",
+    "start": "cross-env PORT=3000 HTTPS=true react-scripts --openssl-legacy-provider start",
     "build": "react-scripts --openssl-legacy-provider build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "tunnel": "vk-tunnel --insecure=1 --http-protocol=https --ws-protocol=wss --host=0.0.0.0 --port=3000"
   },
   "eslintConfig": {
     "extends": [

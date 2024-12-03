@@ -4,6 +4,7 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "./App.css";
+import bridge from "@vkontakte/vk-bridge";
 
 const images = [
     "img/11.png",
