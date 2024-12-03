@@ -4,6 +4,8 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "./App.css";
+import fileSaver from "file-saver/dist/FileSaver";
+import {useEffect, useState} from "react";
 import bridge from "@vkontakte/vk-bridge";
 
 const images = [
@@ -15,20 +17,27 @@ const images = [
 ];
 
 function App() {
+    const [vkUser, setVkUser] = useState(null);
+
+    useEffect(() => {
+        async function fetchUser(){
+            const user = await bridge.send('VKWebAppGetUserInfo');
+            setVkUser(user);
+        }
+        fetchUser();
+        },
+        []
+    )
+
     const sliderRef = useRef(null);
 
+    const downloadImage = (src) => {
+        const imageSplit = src.split('/');
+        fileSaver.saveAs(src, "Воспоминание");
+    };
+
     const handleShare = (src) => {
-        if (navigator.share) {
-            navigator.share({
-                title: "Поделиться изображением",
-                text: "Посмотрите это изображение!",
-                url: src, // Ссылка на изображение
-            })
-                .then(() => console.log("Успешно поделились"))
-                .catch((error) => console.error("Ошибка при попытке поделиться", error));
-        } else {
-            alert("Ваше устройство не поддерживает функцию поделиться.");
-        }
+        downloadImage(src);
     };
 
     const settings = {
@@ -58,7 +67,7 @@ function App() {
                                 className="share-button"
                                 onClick={() => handleShare(src)}
                             >
-                                Поделиться
+                                Скачать картинку
                             </button>
                         )}
                     </div>

@@ -9,6 +9,7 @@
     "@vkontakte/vk-bridge": "^2.15.3",
     "@vkontakte/vk-tunnel": "^0.1.4",
     "cross-env": "^7.0.3",
+    "file-saver": "^2.0.5",
     "fullpage.js": "^4.0.31",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
