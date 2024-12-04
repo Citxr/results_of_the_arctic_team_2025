@@ -1,35 +1,34 @@
-import React, { useRef } from "react";
+import React, {useEffect, useRef, useState} from "react";
 import Slider from "react-slick";
 
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "./App.css";
 import fileSaver from "file-saver/dist/FileSaver";
-import {useEffect, useState} from "react";
 import bridge from "@vkontakte/vk-bridge";
-
-const images = [
-    "img/11.png",
-    "img/12.png",
-    "img/13.png",
-    "img/14.png",
-    "img/15.png",
-];
+import usersData from "./users-data.json";
 
 function App() {
+    const sliderRef = useRef(null);
     const [vkUser, setVkUser] = useState(null);
+    const [images, setImages] = useState([]);
 
     useEffect(() => {
-        async function fetchUser(){
+        async function fetchUser() {
             const user = await bridge.send('VKWebAppGetUserInfo');
             setVkUser(user);
         }
         fetchUser();
-        },
-        []
-    )
+    }, []);
 
-    const sliderRef = useRef(null);
+    useEffect(() => {
+        if (vkUser && vkUser.id && usersData[vkUser.id]) {
+            setImages(usersData[vkUser.id]);
+        }
+        else {
+            setImages(usersData.default);
+        }
+    }, [vkUser]);
 
     const downloadImage = (src) => {
         const imageSplit = src.split('/');
@@ -61,8 +60,8 @@ function App() {
             <Slider ref={sliderRef} {...settings} className="slider">
                 {images.map((src, index) => (
                     <div key={index} className="slide">
-                        <img src={src} alt={`Slide ${index + 1}`} className="slide-image" />
-                        {index !== 0 && index !== images.length - 1 && (
+                        <img src={src} alt={`Slide ${index + 1}`} className="slide-image"/>
+                        {index !== 0 && index !== images.length && (
                             <button
                                 className="share-button"
                                 onClick={() => handleShare(src)}
