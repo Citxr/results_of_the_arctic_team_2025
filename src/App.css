@@ -1,9 +1,8 @@
 * {
-  margin: 0;
-  padding: 0;
-  overflow-y: hidden;
+    margin: 0;
+    padding: 0;
+    overflow-y: hidden;
 }
-
 
 .arrow-button {
     position: absolute;
@@ -37,21 +36,21 @@
 
 
 .slider {
-  background: #0d004d;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
+    background: #0d004d;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
 }
 .slide {
-  background: #0d004d;
-  text-align: center;
-  height: 100vh;
+    background: #0d004d;
+    text-align: center;
+    height: 100vh;
 }
 
 .slide-image {
-  margin: 5vh auto 10px auto;
-  height: 85vh;
-  border-radius: 25px;
+    margin: 5vh auto 10px auto;
+    height: 85vh;
+    border-radius: 25px;
 }
 
 
