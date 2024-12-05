@@ -4,7 +4,6 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "./App.css";
-import fileSaver from "file-saver/dist/FileSaver";
 import bridge from "@vkontakte/vk-bridge";
 import usersData from "./users-data.json";
 
@@ -30,9 +29,23 @@ function App() {
         }
     }, [vkUser]);
 
+    // const downloadImage = (src) => {
+    //     const imageSplit = src.split('/');
+    //     fileSaver.saveAs(src, "Воспоминание");
+    // };
+
     const downloadImage = (src) => {
-        const imageSplit = src.split('/');
-        fileSaver.saveAs(src, "Воспоминание");
+        bridge.send("VKWebAppDownloadFile", {
+            url: src,
+            filename: "Воспоминание",
+            extension: "png",
+        }).then((data) => {
+            if (data.result) {
+                console.log("File downloaded successfully");
+            }
+        }).catch((error) => {
+            console.error("Error downloading file:", error);
+        });
     };
 
     const handleShare = (src) => {
@@ -61,7 +74,7 @@ function App() {
                 {images.map((src, index) => (
                     <div key={index} className="slide">
                         <img src={src} alt={`Slide ${index + 1}`} className="slide-image"/>
-                        {index !== 0 && index !== images.length && (
+                        {index !== 0 && index !== images.length - 1 && (
                             <button
                                 className="share-button"
                                 onClick={() => handleShare(src)}
