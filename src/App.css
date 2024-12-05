@@ -4,6 +4,11 @@
     overflow-y: hidden;
 }
 
+html, body {
+    overflow: hidden;
+    height: 100%;
+}
+
 .arrow-button {
     position: absolute;
     top: 50%;
