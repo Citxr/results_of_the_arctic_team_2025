@@ -9,6 +9,7 @@
     "@vkontakte/vk-bridge": "^2.15.3",
     "@vkontakte/vk-miniapps-deploy": "^0.1.8",
     "@vkontakte/vk-tunnel": "^0.1.4",
+    "cors": "^2.8.5",
     "cross-env": "^7.0.3",
     "file-saver": "^2.0.5",
     "fullpage.js": "^4.0.31",

@@ -10,32 +10,32 @@ import usersData from "./users-data.json";
 function App() {
     const sliderRef = useRef(null);
     const [vkUser, setVkUser] = useState(null);
-    const [images, setImages] = useState([]);
+    const [imgs, setImages] = useState([]);
 
     useEffect(() => {
         async function fetchUser() {
-            const user = await bridge.send('VKWebAppGetUserInfo');
-            setVkUser(user);
+            try {
+                const user = await bridge.send('VKWebAppGetUserInfo');
+                setVkUser(user);
+                console.log("Получены данные пользователя:");
+            } catch (error) {
+                console.error("Ошибка получения данных пользователя:", error);
+            }
         }
         fetchUser();
     }, []);
 
     useEffect(() => {
-        if (vkUser && vkUser.id && usersData[vkUser.id]) {
-            setImages(usersData[vkUser.id]);
+        if (vkUser && usersData[vkUser.id.toString()]) {
+            setImages(usersData[vkUser.id.toString()]);
         }
         else {
             setImages(usersData.default);
         }
     }, [vkUser]);
 
-    // const downloadImage = (src) => {
-    //     const imageSplit = src.split('/');
-    //     fileSaver.saveAs(src, "Воспоминание");
-    // };
-
     const downloadImage = (src) => {
-        bridge.send("VKWebAppDownloadFile", {
+        bridge.send("VKWebAppDownloadFile",{
             url: src,
             filename: "Воспоминание",
             extension: "png",
@@ -71,15 +71,30 @@ function App() {
             </button>
 
             <Slider ref={sliderRef} {...settings} className="slider">
-                {images.map((src, index) => (
+                {imgs.map((src, index) => (
                     <div key={index} className="slide">
-                        <img src={src} alt={`Slide ${index + 1}`} className="slide-image"/>
-                        {index !== 0 && index !== images.length - 1 && (
+                        <img
+                            src={src}
+                            alt={`Slide ${index + 1}`}
+                            className="slide-image"
+                        />
+                        {index !== 0 && index !== imgs.length - 1 && (
                             <button
                                 className="share-button"
                                 onClick={() => handleShare(src)}
                             >
                                 Скачать картинку
+                            </button>
+                        )}
+                        {index === imgs.length - 1 && imgs[0] === "img/31.avif" && (
+                            <button
+                                className="default-button"
+                                onClick={() =>{
+                                    sliderRef.current.slickGoTo(0);
+                                    setImages(usersData.default);
+                                }}
+                            >
+                                Смотреть общие итоги корпуса
                             </button>
                         )}
                     </div>

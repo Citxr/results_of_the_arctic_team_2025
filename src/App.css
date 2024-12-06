@@ -72,6 +72,18 @@ html, body {
     transition: background-color 0.3s ease;
 }
 
+.default-button {
+    margin-top: auto;
+    padding: 5px 10px;
+    background: transparent;
+    color: #fff;
+    border: 1px solid #fff;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
 .share-button:hover {
     background-color: #0056b3; /* Цвет при наведении */
 }
