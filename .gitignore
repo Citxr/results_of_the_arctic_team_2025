@@ -21,6 +21,16 @@
 # user data
 src/users-data.json
 
+# images
+public/img
+
+# build
+build.zip
+
+modules.xml
+teamarctic-results.iml
+vcs.xml
+
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
