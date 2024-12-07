@@ -34,23 +34,24 @@ function App() {
         }
     }, [vkUser]);
 
-    const downloadImages = (images) => {
-        images.forEach((src, index) => {
-            bridge.send("VKWebAppDownloadFile", {
-                url: src,
-                filename: `Итоги года 2024 - ${index + 1}`,
-                extension: "png",
-            }).then((data) => {
-                if (data.result) {
-                    console.log(`Успешный успех: картинка ${index + 1} скачана`);
-                }
-            }).catch((error) => {
-                console.error(`Эх ты блин: картинка ${index + 1} не скачана:`, error);
-            });
-        });
-    };
+    // const downloadImages = (images) => {
+    //     images.forEach((src, index) => {
+    //         bridge.send("VKWebAppDownloadFile", {
+    //             // url: `https://stage-app52792838-2318179587d2.pages.vk-apps.com/${src}`,
+    //             url: "http://u993533i.beget.tech/1.png",
+    //             filename: `Итоги года 2024 - ${index + 1}`,
+    //             extension: "png"
+    //         }).then((data) => {
+    //             if (data.result) {
+    //                 console.log(`Успешный успех: картинка ${index + 1} скачана`);
+    //             }
+    //         }).catch((error) => {
+    //             console.error(`Эх ты блин: картинка ${index + 1} не скачана:`, error);
+    //         });
+    //     });
+    // };
     //
-    // const downloadImage = (src, index) => {
+    // const downloadSingleImage = (src, index) => {
     //     bridge.send("VKWebAppDownloadFile", {
     //         url: src,
     //         filename: `Итоги года 2024 - ${index + 1}`,
@@ -101,6 +102,7 @@ function App() {
             </button>
 
             <Slider ref={sliderRef} {...settings} className="slider">
+
                 {imgs.map((src, index) => (
                     <div
                         key={index} className="slide">
@@ -109,6 +111,7 @@ function App() {
                             alt={`Slide ${index + 1}`}
                             className="slide-image"
                         />
+
                         {index !== 0 && index !== imgs.length - 1 && (
                             <button
                                 className="share-button"
@@ -116,16 +119,30 @@ function App() {
                             >Выложить в историю
                             </button>
                         )}
+
                         {index === imgs.length - 1 && imgs[0] === "img/31.avif" && (
-                            <button
-                                className="default-button"
-                                onClick={() =>{
-                                    sliderRef.current.slickGoTo(0);
-                                    setImages(usersData.default);
-                                }}
-                            >Смотреть общие итоги корпуса
-                            </button>
+                                <button
+                                    className="change-button"
+                                    onClick={() =>{
+                                        sliderRef.current.slickGoTo(0);
+                                        setImages(usersData.default);
+                                    }}
+                                >Смотреть общие итоги корпуса
+                                </button>
                         )}
+
+                        {index === imgs.length - 1 && imgs[0] === "img/11.avif"
+                            && usersData[vkUser.id.toString()] && (
+                                <button
+                                    className="change-button"
+                                    onClick={() =>{
+                                        sliderRef.current.slickGoTo(0);
+                                        setImages(usersData.vkUser.id.toString());
+                                    }}
+                                >Смотреть личные итоги
+                                </button>
+                        )}
+
                     </div>
                 ))}
             </Slider>
