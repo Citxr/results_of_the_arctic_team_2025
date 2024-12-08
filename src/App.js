@@ -1,23 +1,26 @@
 import React, {useEffect, useRef, useState} from "react";
 import Slider from "react-slick";
+import toast from "react-hot-toast";
 
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "./App.css";
 import bridge from "@vkontakte/vk-bridge";
 import usersData from "./users-data.json";
+import {Toaster} from "react-hot-toast";
 
 function App() {
     const sliderRef = useRef(null);
     const [vkUser, setVkUser] = useState(null);
     const [imgs, setImages] = useState([]);
+    const [diskLink, setDiskLink] = useState("");
 
     useEffect(() => {
         async function fetchUser() {
             try {
                 const user = await bridge.send('VKWebAppGetUserInfo');
                 setVkUser(user);
-                console.log("Успешный успех: получены данные пользователя:");
+                console.log("Успешный успех: получены данные пользователя");
             } catch (error) {
                 console.error("Эх ты блин: ошибка получения данных пользователя:", error);
             }
@@ -27,43 +30,15 @@ function App() {
 
     useEffect(() => {
         if (vkUser && usersData[vkUser.id.toString()]) {
-            setImages(usersData[vkUser.id.toString()]);
+            const userImages = usersData[vkUser.id.toString()];
+            const link = userImages.pop();
+            setDiskLink(link);
+            setImages(userImages);
         }
         else {
             setImages(usersData.default);
         }
     }, [vkUser]);
-
-    // const downloadImages = (images) => {
-    //     images.forEach((src, index) => {
-    //         bridge.send("VKWebAppDownloadFile", {
-    //             // url: `https://stage-app52792838-2318179587d2.pages.vk-apps.com/${src}`,
-    //             url: "http://u993533i.beget.tech/1.png",
-    //             filename: `Итоги года 2024 - ${index + 1}`,
-    //             extension: "png"
-    //         }).then((data) => {
-    //             if (data.result) {
-    //                 console.log(`Успешный успех: картинка ${index + 1} скачана`);
-    //             }
-    //         }).catch((error) => {
-    //             console.error(`Эх ты блин: картинка ${index + 1} не скачана:`, error);
-    //         });
-    //     });
-    // };
-    //
-    // const downloadSingleImage = (src, index) => {
-    //     bridge.send("VKWebAppDownloadFile", {
-    //         url: src,
-    //         filename: `Итоги года 2024 - ${index + 1}`,
-    //         extension: "png",
-    //     }).then((data) => {
-    //         if (data.result) {
-    //             console.log(`Успешный успех: картинка ${index + 1} скачана`);
-    //         }
-    //     }).catch((error) => {
-    //         console.error(`Эх ты блин: картинка ${index + 1} не скачана:`, error);
-    //     });
-    // };
 
     const uploadStory = (src, index) => {
         bridge.send("VKWebAppShowStoryBox", {
@@ -83,6 +58,15 @@ function App() {
         })
     };
 
+    const copyLink = (link) => {
+        navigator.clipboard.writeText(link).then(() => {
+            toast.success("Ссылка на Яндекс Диск скопирована");
+            console.log("Ссылка скопирована");
+        }).catch((error) => {
+            console.error("Ссылка не скопирована:", error);
+        });
+    };
+
     const settings = {
         dots: false,
         infinite: false,
@@ -93,6 +77,11 @@ function App() {
 
     return (
         <div className="slider-container">
+            <Toaster
+                position="bottom-center"
+                reverseOrder={false}
+            />
+
             {/* Кнопка "влево" */}
             <button
                 className="arrow-button left"
@@ -102,7 +91,6 @@ function App() {
             </button>
 
             <Slider ref={sliderRef} {...settings} className="slider">
-
                 {imgs.map((src, index) => (
                     <div
                         key={index} className="slide">
@@ -116,33 +104,43 @@ function App() {
                             <button
                                 className="share-button"
                                 onClick={() => {uploadStory(src, index)}}
-                            >Выложить в историю
+                                >Выложить в историю
                             </button>
                         )}
 
-                        {index === imgs.length - 1 && imgs[0] === "img/31.avif" && (
+                        {index === imgs.length - 1 && imgs[index] === "img/36.avif" && (
+                            <div className="button-container">
                                 <button
                                     className="change-button"
-                                    onClick={() =>{
+                                    onClick={() => {
                                         sliderRef.current.slickGoTo(0);
                                         setImages(usersData.default);
                                     }}
-                                >Смотреть общие итоги корпуса
+                                    >Смотреть общие итоги корпуса
                                 </button>
-                        )}
 
-                        {index === imgs.length - 1 && imgs[0] === "img/11.avif"
-                            && usersData[vkUser.id.toString()] && (
                                 <button
-                                    className="change-button"
-                                    onClick={() =>{
-                                        sliderRef.current.slickGoTo(0);
-                                        setImages(usersData.vkUser.id.toString());
+                                    className="download-button"
+                                    onClick={() => {
+                                        copyLink(diskLink);
+                                        window.open(diskLink, '_blank')
                                     }}
-                                >Смотреть личные итоги
+                                    >Мои итоги на ЯДиске
                                 </button>
+                            </div>
                         )}
 
+                        {/*{imgs[index] === "img/12.avif" && vkUser &&*/}
+                        {/*    usersData[vkUser.id.toString()] && (*/}
+                        {/*    <button*/}
+                        {/*        className="change-button"*/}
+                        {/*        onClick={() =>{*/}
+                        {/*                sliderRef.current.slickGoTo(0);*/}
+                        {/*                setImages(usersData.vkUser.id.toString());*/}
+                        {/*        }}*/}
+                        {/*        >Смотреть личные итоги*/}
+                        {/*    </button>*/}
+                        {/*)}*/}
                     </div>
                 ))}
             </Slider>
