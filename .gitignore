@@ -21,9 +21,6 @@
 # user data
 src/users-data.json
 
-# images
-public/img
-
 # build
 build.zip
 
