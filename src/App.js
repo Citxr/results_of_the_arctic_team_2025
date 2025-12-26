@@ -1,12 +1,10 @@
-import React, {useEffect, useRef, useState, useCallback} from "react";
+import React, {useEffect, useRef, useState, useCallback, useMemo} from "react";
 import toast from "react-hot-toast";
 import Papa from "papaparse";
 import html2canvas from "html2canvas";
 import {ReactComponent as LogoL} from "./love.svg";
 import {ReactComponent as LogoC} from "./com.svg";
 import {ReactComponent as LogoOR} from "./or.svg";
-
-
 
 import "./App.css";
 import bridge from "@vkontakte/vk-bridge";
@@ -15,6 +13,7 @@ import {ChevronUp, ChevronDown, Share2} from "lucide-react";
 
 // Импортируем CSV файл
 import csvFile from "./final.csv";
+
 
 // Картинки персонажей
 const characterImages = {
@@ -128,6 +127,39 @@ function App() {
             }
         }
     }, [vkUser, csvData]);
+
+    const declineTimeUnit = (number, unit) => {
+    const lastDigit = number % 10;
+    const lastTwoDigits = number % 100;
+
+    if (unit === 'day') {
+        if (lastTwoDigits >= 11 && lastTwoDigits <= 19) {
+            return 'дней';
+        }
+        if (lastDigit === 1) {
+            return 'день';
+        }
+        if (lastDigit >= 2 && lastDigit <= 4) {
+            return 'дня';
+        }
+        return 'дней';
+    }
+
+    if (unit === 'hour') {
+        if (lastTwoDigits >= 11 && lastTwoDigits <= 19) {
+            return 'часов';
+        }
+        if (lastDigit === 1) {
+            return 'час';
+        }
+        if (lastDigit >= 2 && lastDigit <= 4) {
+            return 'часа';
+        }
+        return 'часов';
+    }
+
+    return unit;
+    };
 
     // Плавный переход к слайду
     const goToSlide = (index) => {
@@ -261,8 +293,22 @@ function App() {
         }
     }, []);
 
-    // Массив слайдов
-    const slides = userData ? [
+    // Слайды для случая, когда пользователь не найден
+    const notFoundSlides = useMemo(() => [
+        { type: "notfound", bg: "https://sun9-13.userapi.com/s/v1/ig2/JjIVzFWYQRW3GFISpudhnuuCGZ7LDaHLGdFOrp9l5xPgAkv5VkqEJgpfHItyavC6v8TWrrF2z4eWD8mW5XgW7Uc9.jpg?quality=95&as=32x57,48x85,72x128,108x192,160x284,240x427,360x640,480x853,540x960,640x1138,720x1280,1080x1920&from=bu&cs=1080x0" },
+        { type: "notfound", bg: "https://sun9-75.userapi.com/s/v1/ig2/ry9MGrEaBIyPfqyPe9v1eL6wEZ20cE32IIncE0Pz8-dJ5jg46LX_djvjT02C63NvWikTUTOTG8uzsnIBLZ9p__iz.jpg?quality=95&as=32x57,48x85,72x128,108x192,160x284,240x427,360x640,480x853,540x960,640x1138,720x1280,1080x1920,1280x2276,1440x2560&from=bu&cs=1440x0" },
+        { type: "notfound", bg: "https://sun9-70.userapi.com/s/v1/ig2/o4WlDVHU1hu3wgK3ak1urqi4TuNn7ciLhCFEgLyPGsz12I7nEBa21XVuvh1urQTtOUFsUB7eIhlDIU1oodTd5s93.jpg?quality=95&as=32x57,48x85,72x128,108x192,160x284,240x427,360x640,480x853,540x960,640x1138,720x1280,1080x1920,1280x2276,1440x2560&from=bu&cs=1440x0" },
+        { type: "notfound", bg: "https://sun9-80.userapi.com/s/v1/ig2/BZ07mWa-vwUtEfkdx1ayvnJ97E1Ew_QWw9B24JV0F5qGJYGktippfDrmoz3azkYUCm0hsBycFtgLV6jfeozgOydD.jpg?quality=95&as=32x57,48x85,72x128,108x192,160x284,240x427,360x640,480x853,540x960,640x1138,720x1280,1080x1920&from=bu&cs=1080x0" },
+        { type: "notfound", bg: "https://sun9-36.userapi.com/s/v1/ig2/5mYtKQgQGsQhTuUgCfQCbqHFAoHhMkkQuNlVEUGvyJjNAMdi4wGW06FcHgomNx-lYXVvjtzKLgr9IAHOViiFOxfi.jpg?quality=95&as=32x57,48x85,72x128,108x192,160x284,240x427,360x640,480x853,540x960,640x1138,720x1280,1080x1920&from=bu&cs=1080x0" },
+        { type: "notfound", bg: "https://sun9-88.userapi.com/s/v1/ig2/rhq2lZLXcUNdX2wyWnhosDryJrK8Cgokf2Ksb_zZ8yub7SSnIXlcXhv_8LAAEIzJUWA3lgOXXeBJFTSTRd9WcW5S.jpg?quality=95&as=32x57,48x85,72x128,108x192,160x284,240x427,360x640,480x853,540x960,640x1138,720x1280,1080x1920,1280x2276,1440x2560&from=bu&cs=1440x0" },
+        { type: "notfound", bg: "https://sun9-43.userapi.com/s/v1/ig2/ZTZpJ7FOuhSIFoPU13bYbJDhJwgletvKiF-YxhBWjEbs7FUtfAjgYD2-e-2C4dxeoUorEa1DZYsN9wCEfeSh-uTV.jpg?quality=95&as=32x57,48x85,72x128,108x192,160x284,240x427,360x640,480x853,540x960,640x1138,720x1280,1080x1920,1280x2276,1440x2560&from=bu&cs=1440x0" },
+        { type: "notfound", bg: "https://sun9-30.userapi.com/s/v1/ig2/8uNp_Nyhiaj96ZSpLtCkmsdPukfaFkadko2byxfPGs0j5gYa-HZebD2sQBzg7peO2VwMzL9WCg_Lh3kPNKhCJsUJ.jpg?quality=95&as=32x57,48x85,72x128,108x192,160x284,240x427,360x640,480x853,540x960,640x1138,720x1280,1080x1920,1280x2276,1440x2560&from=bu&cs=1440x0" },
+        { type: "notfound", bg: "https://sun9-63.userapi.com/s/v1/ig2/YZai0iUMIY-1DG_FgzAms1Fe8-0a-GD5x5lJPgdApOgA7H_eLzZBeFHKAVAFdfaVP2J8KvVlLqZvcdGl5ZFnCSog.jpg?quality=95&as=32x57,48x85,72x128,108x192,160x284,240x427,360x640,480x853,540x960,640x1138,720x1280,1080x1920,1280x2276,1440x2560&from=bu&cs=1440x0" },
+        { type: "notfound", bg: "https://sun9-83.userapi.com/s/v1/ig2/iKIrDRW24rCA2xihXIEZVha5UzxT9bwzjopt5uOL9PQ_F2zBoCS_CH4f6ngoCgXQKZ_gXjszCBJAD6p-M-Yks063.jpg?quality=95&as=32x57,48x85,72x128,108x192,160x284,240x427,360x640,480x853,540x960,640x1138,720x1280,1080x1920,1280x2276,1440x2560&from=bu&cs=1440x0" },
+    ], []);
+
+    // Массив слайдов для найденного пользователя
+    const userSlides = userData ? [
         {
             type: "main",
             bg: "https://sun9-76.userapi.com/s/v1/ig2/ZdMp3o1ZttZ9W68DTKQVWI-NdLndKJDAl3ilwqnkKV3fzfh_gcqWAmhbK656V6fLBu4QziSiriLSb1Lq4DPK-hx_.jpg?quality=95&as=32x57,48x85,72x128,108x192,160x284,240x427,360x640,480x853,540x960,640x1138,720x1280,1080x1920&from=bu&cs=1080x0"
@@ -316,24 +362,14 @@ function App() {
         },
     ] : [];
 
+    // Определяем, какие слайды показывать
+    const slides = userData ? userSlides : notFoundSlides;
+
     if (loading) {
         return (
             <div className="loading-screen">
                 <div className="spinner"></div>
                 <p className="loading-text">Загружаем твои экспедиции...</p>
-            </div>
-        );
-    }
-
-    if (!userData && !loading) {
-        return (
-            <div className="error-screen">
-                <div className="card">
-                    <div className="error-icon">❌</div>
-                    <h2>Профиль не найден</h2>
-                    <p>Твой VK ID: <strong>{vkUser?.id}</strong></p>
-                    <p className="error-hint">Если ты участвовал в экспедициях, обратись к организаторам</p>
-                </div>
             </div>
         );
     }
@@ -367,274 +403,266 @@ function App() {
                     style={{backgroundImage: `url(${currentSlideData?.bg})`}}
                     key={currentSlide}
                 >
-
-
                     <div className="card-content">
-                        {/* Главный слайд */}
-                        {currentSlideData?.type === "main" && (
-                            <div className="main-content">
-                                <h1 className="main-title">{currentSlideData.title}</h1>
-                                <p className="main-subtitle">{currentSlideData.subtitle}</p>
-                            </div>
-                        )}
-
-                        {/* Первая экспедиция */}
-                        {currentSlideData?.type === "firstExp" && (
-                            <div className="first-exp-figma">
-                                {/* Верхняя белая плашка */}
-                                <div className="white-pill">
-                                    {currentSlideData.title}
-                                </div>
-
-                                {/* Фото */}
-                                {currentSlideData.expPhoto && (
-                                    <div className="figma-photo-wrapper">
-                                        <img
-                                            src={currentSlideData.expPhoto}
-                                            alt={currentSlideData.expName}
-                                            className="figma-photo"
-                                        />
+                        {/* Если пользователь найден - показываем обычные слайды */}
+                        {userData && (
+                            <>
+                                {/* Главный слайд */}
+                                {currentSlideData?.type === "main" && (
+                                    <div className="main-content">
+                                        <h1 className="main-title">{currentSlideData.title}</h1>
+                                        <p className="main-subtitle">{currentSlideData.subtitle}</p>
                                     </div>
                                 )}
 
-                                <div className="white-pill-name" style={{left: "21%", bottom: "38%"}}>
-                                    {currentSlideData.expName}
-                                </div>
-
-                                {/* Стрелка */}
-                                <div className="arrow-down"/>
-
-                                {/* Нижняя белая карточка */}
-                                <div className="white-card">
-                                    <div className="exp-date">
-                                        Это было аж {currentSlideData.expDate}!
-                                    </div>
-                                </div>
-                            </div>
-                        )}
-
-
-                        {/* Слайд с временем */}
-                        {currentSlideData?.type === "time" && (
-                            <div className="time-content">
-                                <h2 className="like-number-likes">{currentSlideData.title}</h2>
-                                <div className="time-stats">
-
-                                    <div className={"days"}>
-                                        <div className="big-number-days">{formatNumber(currentSlideData.days)}</div>
-                                        <div className="time-label">дней</div>
-                                    </div>
-
-                                    <LogoOR className={"likes-coms-or"}></LogoOR>
-
-                                    <div className={"days"}>
-                                        <div className="big-number-days">{formatNumber(currentSlideData.hours)}</div>
-                                        <div className="time-label">часов</div>
-                                    </div>
-
-                                </div>
-                            </div>
-                        )}
-
-                        {/* Слайд со статистикой */}
-                        {currentSlideData?.type === "stats" && (
-                            <div className="stats-content">
-                                <h2 className="like-number-likes">{currentSlideData.title}</h2>
-                                <div className="stats-grid">
-                                    <div className="stat-item">
-                                        <div className="like-item">
-                                            <div
-                                                className="stat-number">{formatNumber(currentSlideData.expeditions)}</div>
+                                {/* Первая экспедиция */}
+                                {currentSlideData?.type === "firstExp" && (
+                                    <div className="first-exp-figma">
+                                        {/* Верхняя белая плашка */}
+                                        <div className="white-pill-first">
+                                            {currentSlideData.title}
                                         </div>
-                                        <div className="time-label">
-                                            {pluralize(currentSlideData.expeditions, [
-                                                'экспедиция',
-                                                'экспедиции',
-                                                'экспедиций'
-                                            ])}
+
+                                        {/* Фото */}
+                                        {currentSlideData.expPhoto && (
+                                            <div className="figma-photo-wrapper">
+                                                <img
+                                                    src={currentSlideData.expPhoto}
+                                                    alt={currentSlideData.expName}
+                                                    className="figma-photo"
+                                                />
+                                            </div>
+                                        )}
+
+                                        <div className="white-pill-name" style={{left: "21%", bottom: "38%"}}>
+                                            {currentSlideData.expName}
+                                        </div>
+
+                                        {/* Стрелка */}
+                                        <div className="arrow-down"/>
+
+                                        {/* Нижняя белая карточка */}
+                                        <div className="white-card">
+                                            <div className="exp-date">
+                                                Это было аж {currentSlideData.expDate}!
+                                            </div>
                                         </div>
                                     </div>
-                                    <div className="stat-item">
-                                        <div className="like-item">
-                                            <div className="stat-number">{formatNumber(currentSlideData.regions)}</div>
-                                        </div>
-                                        <div className="time-label">
-                                            {pluralize(currentSlideData.regions, [
-                                                'регион',
-                                                'региона',
-                                                'регионов'
-                                            ])}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        )}
+                                )}
 
-                        {/* Слайд с людьми */}
-                        {currentSlideData?.type === "people" && (
-                            <div className="people-content">
-                                <h2 className="like-number-likes">{currentSlideData.title}</h2>
-                                <div className="like-item">
-                                    <div className="people-number">{formatNumber(currentSlideData.people)}</div>
-                                </div>
-                            </div>
-                        )}
-
-                        {/* Слайд с лайками */}
-                        {currentSlideData?.type === "likes" && (() => {
-                            const likesNum = parseInt(currentSlideData.likes) || 0;
-                            const commentsNum = parseInt(currentSlideData.comments) || 0;
-                            const hasLikesOrComments = likesNum > 0 || commentsNum > 0;
-
-                            return (
-                                <div className="likes-content">
-                                    <div className="attention">Внимание!</div>
-
-                                    {hasLikesOrComments ? (
-                                        <>
-                                            <div className="likes-grid">
-                                                <LogoL src={"/img/love.svg"} className={"likes-coms"} stroke-width="3px"
-                                                       stroke="#ffffff"></LogoL>
-                                                <LogoC src={"/img/com.svg"} className={"likes-coms"}></LogoC>
-                                                <div className="like-item">
-                                                    <div
-                                                        className="like-number">{formatNumber(currentSlideData.likes)}</div>
-                                                </div>
-                                                <div className="like-item">
-                                                    <div
-                                                        className="like-number">{formatNumber(currentSlideData.comments)}</div>
+                                {/* Слайд с временем */}
+                                {currentSlideData?.type === "time" && (
+                                    <div className="time-content">
+                                        <h2 className="like-number-likes">{currentSlideData.title}</h2>
+                                        <div className="time-stats">
+                                            <div className={"days"}>
+                                                <div className="big-number-days">{formatNumber(currentSlideData.days)}</div>
+                                                <div className="time-label">
+                                                    {declineTimeUnit(currentSlideData.days, 'day')}
                                                 </div>
                                             </div>
-                                            <div className="like-number-likes-l">Столько лайков и комментариев ты
-                                                оставил за год
+                                            <LogoOR className={"likes-coms-or"}></LogoOR>
+                                            <div className={"days"}>
+                                                <div className="big-number-days">{formatNumber(currentSlideData.hours)}</div>
+                                                <div className="time-label">
+                                                    {declineTimeUnit(currentSlideData.hours, 'hour')}
+                                                </div>
                                             </div>
-                                        </>
-                                    ) : (
-                                        <div className="like-number-likes-l">
-                                            В этом году ты к сожалению не сильно много лайкал и комментировал, но в
-                                            следующем у тебя всё впереди!
                                         </div>
-                                    )}
-                                </div>
-                            );
-                        })()}
-
-                        {/* Слайд с персонажем */}
-                        {currentSlideData?.type === "character" && (
-                            <div className="character-content">
-                                <h2 className="like-number-hero">{currentSlideData.title}</h2>
-                                <div className="character-card">
-                                    <img
-                                        src={currentSlideData.characterImage}
-                                        alt={currentSlideData.character}
-                                        className="character-image"
-                                        onError={(e) => {
-                                            e.target.style.display = 'none';
-                                            e.target.parentElement.innerHTML = `
-                        <div class="character-placeholder">
-                          <div class="placeholder-icon">🐾</div>
-                          <h3>${currentSlideData.character}</h3>
-                        </div>
-                      `;
-                                        }}
-                                    />
-                                    <div className="character-name">{currentSlideData.character}</div>
-                                    <div>
-                                        <p className="character-name-dis">{currentSlideData.description}</p>
                                     </div>
-                                </div>
-                            </div>
+                                )}
+
+                                {/* Слайд со статистикой */}
+                                {currentSlideData?.type === "stats" && (
+                                    <div className="stats-content">
+                                        <h2 className="like-number-likes">{currentSlideData.title}</h2>
+                                        <div className="stats-grid">
+                                            <div className="stat-item">
+                                                <div className="like-item">
+                                                    <div className="stat-number">{formatNumber(currentSlideData.expeditions)}</div>
+                                                </div>
+                                                <div className="time-label">
+                                                    {pluralize(currentSlideData.expeditions, [
+                                                        'экспедиция',
+                                                        'экспедиции',
+                                                        'экспедиций'
+                                                    ])}
+                                                </div>
+                                            </div>
+                                            <div className="stat-item">
+                                                <div className="like-item">
+                                                    <div className="stat-number">{formatNumber(currentSlideData.regions)}</div>
+                                                </div>
+                                                <div className="time-label">
+                                                    {pluralize(currentSlideData.regions, [
+                                                        'регион',
+                                                        'региона',
+                                                        'регионов'
+                                                    ])}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* Слайд с людьми */}
+                                {currentSlideData?.type === "people" && (
+                                    <div className="people-content">
+                                        <h2 className="like-number-likes">{currentSlideData.title}</h2>
+                                        <div className="like-item">
+                                            <div className="people-number">{formatNumber(currentSlideData.people)}</div>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* Слайд с лайками */}
+                                {currentSlideData?.type === "likes" && (() => {
+                                    const likesNum = parseInt(currentSlideData.likes) || 0;
+                                    const commentsNum = parseInt(currentSlideData.comments) || 0;
+                                    const hasLikesOrComments = likesNum > 0 || commentsNum > 0;
+
+                                    return (
+                                        <div className="likes-content">
+                                            <div className="attention">Внимание!</div>
+                                            {hasLikesOrComments ? (
+                                                <>
+                                                    <div className="likes-grid">
+                                                        <LogoL src={"/img/love.svg"} className={"likes-coms"} stroke-width="3px" stroke="#ffffff"></LogoL>
+                                                        <LogoC src={"/img/com.svg"} className={"likes-coms"}></LogoC>
+                                                        <div className="like-item">
+                                                            <div className="like-number">{formatNumber(currentSlideData.likes)}</div>
+                                                        </div>
+                                                        <div className="like-item">
+                                                            <div className="like-number">{formatNumber(currentSlideData.comments)}</div>
+                                                        </div>
+                                                    </div>
+                                                    <div className="like-number-likes-l">
+                                                        Столько лайков и комментариев ты оставил за год
+                                                    </div>
+                                                </>
+                                            ) : (
+                                                <div className="like-number-likes-l">
+                                                    В этом году ты к сожалению не сильно много лайкал и комментировал, но в следующем у тебя всё впереди!
+                                                </div>
+                                            )}
+                                        </div>
+                                    );
+                                })()}
+
+                                {/* Слайд с персонажем */}
+                                {currentSlideData?.type === "character" && (
+                                    <div className="character-content">
+                                        <h2 className="like-number-hero">{currentSlideData.title}</h2>
+                                        <div className="character-card">
+                                            <img
+                                                src={currentSlideData.characterImage}
+                                                alt={currentSlideData.character}
+                                                className="character-image"
+                                                onError={(e) => {
+                                                    e.target.style.display = 'none';
+                                                    e.target.parentElement.innerHTML = `
+                                                        <div class="character-placeholder">
+                                                            <div class="placeholder-icon">🐾</div>
+                                                            <h3>${currentSlideData.character}</h3>
+                                                        </div>
+                                                    `;
+                                                }}
+                                            />
+                                            <div className="character-name">{currentSlideData.character}</div>
+                                            <div>
+                                                <p className="character-name-dis">{currentSlideData.description}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {currentSlideData?.type === "share" && (
+                                    <div className="share-content">
+                                        <button className="share-story-button" onClick={shareToStory}>
+                                            <Share2 size={20}/>
+                                            Поделиться в историю
+                                        </button>
+                                    </div>
+                                )}
+                            </>
                         )}
 
-                        {currentSlideData?.type === "share" && (
-                            <div className="share-content">
-                                <button
-                                    className="share-story-button"
-                                    onClick={shareToStory}
-                                >
-                                    <Share2 size={20}/>
-                                    Поделиться в историю
-                                </button>
-                            </div>
-                        )}
-
+                        {/* Если пользователь НЕ найден - показываем слайды с фото */}
+                        {!userData && !loading && currentSlideData?.type === "notfound"}
                     </div>
                 </div>
             </div>
 
-            {/* Карточка для истории (скрытая) */}
-            <div
-                ref={storyCardRef}
-                style={{
-                    position: 'absolute',
-                    left: '-9999px',
-                    top: '-9999px',
-                    width: '1080px',
-                    height: '1920px',
-                    backgroundImage: 'url(https://sun9-67.userapi.com/s/v1/ig2/Q31sCdqGWS66KTo6STYChq5xgFq869jgDi7t_EVcviMcylIhrBCjTJa75K5M4x0Ty1oMsLGONoMUufkZA61EHfuX.jpg?quality=95&as=32x57,48x85,72x128,108x192,160x284,240x427,360x640,480x853,540x960,640x1138,720x1280,1080x1920,1280x2276,1440x2560&from=bu&cs=1280x0)',
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                    padding: '80px',
-                    boxSizing: 'border-box',
-                    color: 'white',
-                    fontFamily: 'Gilroy, sans-serif'
-                }}
-            >
-                <h1 style={{
-                    fontSize: '100px',
-                    textAlign: 'center',
-                    marginBottom: '60px',
-                    textShadow: '2px 2px 4px rgba(0,0,0,0.5)',
-                    marginTop: '200px'
-                }}>
-                    Мои итоги
-                </h1>
-
-                <div style={{
-                    fontSize: '60px',
-                    lineHeight: '1.6',
-                    backgroundColor: 'rgba(12,26,80,0.6)',
-                    padding: '40px',
-                    borderRadius: '20px',
-                    textShadow: '1px 1px 2px rgba(0,0,0,0.5)'
-                }}>
-                    <div style={{marginBottom: '25px'}}>
-                        <strong>Первая экспедиция:</strong> {userData?.FirstExp} {userData.FirstExpDate}
-                    </div>
-                    <div style={{marginBottom: '25px'}}>
-                        <strong>Дней в экспедициях:</strong> {formatNumber(userData?.Days)}
-                    </div>
-                    <div style={{marginBottom: '25px'}}>
-                        <strong>Часов в экспедициях:</strong> {formatNumber(userData?.Hours)}
-                    </div>
-                    <div style={{marginBottom: '25px'}}>
-                        <strong>Количество экспедиций:</strong> {formatNumber(userData?.TotalExps)}
-                    </div>
-                    <div style={{marginBottom: '25px'}}>
-                        <strong>Регионов посещено:</strong> {formatNumber(userData?.TotalRegions)}
-                    </div>
-                    <div style={{marginBottom: '25px'}}>
-                        <strong>Участников побывало с тобой:</strong> {formatNumber(userData?.People)}
-                    </div>
-
-                    {parseInt(userData?.Likes) > 0 && (
+            {/* Карточка для истории (только для найденных пользователей) */}
+            {userData && (
+                <div
+                    ref={storyCardRef}
+                    style={{
+                        position: 'absolute',
+                        left: '-9999px',
+                        top: '-9999px',
+                        width: '1080px',
+                        height: '1920px',
+                        backgroundImage: 'url(https://sun9-67.userapi.com/s/v1/ig2/Q31sCdqGWS66KTo6STYChq5xgFq869jgDi7t_EVcviMcylIhrBCjTJa75K5M4x0Ty1oMsLGONoMUufkZA61EHfuX.jpg?quality=95&as=32x57,48x85,72x128,108x192,160x284,240x427,360x640,480x853,540x960,640x1138,720x1280,1080x1920,1280x2276,1440x2560&from=bu&cs=1280x0)',
+                        backgroundSize: 'cover',
+                        backgroundPosition: 'center',
+                        padding: '80px',
+                        boxSizing: 'border-box',
+                        color: 'white',
+                        fontFamily: 'Monserat, sans-serif'
+                    }}
+                >
+                    <h1 style={{
+                        fontSize: '100px',
+                        textAlign: 'center',
+                        marginBottom: '5px',
+                        textShadow: '2px 2px 4px rgba(0,0,0,0.5)',
+                        marginTop: '300px'
+                    }}>
+                        Мои итоги
+                    </h1>
+                    <div style={{
+                        fontSize: '50px',
+                        lineHeight: '1.6',
+                        backgroundColor: 'rgba(12,26,80,0.6)',
+                        padding: '25px',
+                        borderRadius: '20px',
+                        textShadow: '1px 1px 2px rgba(0,0,0,0.5)'
+                    }}>
                         <div style={{marginBottom: '25px'}}>
-                            <strong>Лайков оставлено:</strong> {formatNumber(userData?.Likes)}
+                            <strong>Первая экспедиция:</strong> {userData?.FirstExp} {userData.FirstExpDate}
                         </div>
-                    )}
-
-                    {parseInt(userData?.Comments) > 0 && (
                         <div style={{marginBottom: '25px'}}>
-                            <strong>Комментариев оставлено:</strong> {formatNumber(userData?.Comments)}
+                            <strong>Дней в экспедициях:</strong> {formatNumber(userData?.Days)}
                         </div>
-                    )}
-
-                    <div style={{marginBottom: '25px'}}>
-                        <strong>Тотем:</strong> {userData?.Animal}
+                        <div style={{marginBottom: '25px'}}>
+                            <strong>Часов в экспедициях:</strong> {formatNumber(userData?.Hours)}
+                        </div>
+                        <div style={{marginBottom: '25px'}}>
+                            <strong>Количество экспедиций:</strong> {formatNumber(userData?.TotalExps)}
+                        </div>
+                        <div style={{marginBottom: '25px'}}>
+                            <strong>Регионов посещено:</strong> {formatNumber(userData?.TotalRegions)}
+                        </div>
+                        <div style={{marginBottom: '25px'}}>
+                            <strong>Участников побывало с тобой:</strong> {formatNumber(userData?.People)}
+                        </div>
+                        {parseInt(userData?.Likes) > 0 && (
+                            <div style={{marginBottom: '25px'}}>
+                                <strong>Лайков оставлено:</strong> {formatNumber(userData?.Likes)}
+                            </div>
+                        )}
+                        {parseInt(userData?.Comments) > 0 && (
+                            <div style={{marginBottom: '25px'}}>
+                                <strong>Комментариев оставлено:</strong> {formatNumber(userData?.Comments)}
+                            </div>
+                        )}
+                        <div style={{marginBottom: '25px'}}>
+                            <strong>Тотем:</strong> {userData?.Animal}
+                        </div>
                     </div>
                 </div>
-
-            </div>
+            )}
 
             {/* Навигация */}
             <div className="navigation">
@@ -645,7 +673,6 @@ function App() {
                 >
                     <ChevronUp size={24}/>
                 </button>
-
                 <div className="nav-dots">
                     {slides.map((_, index) => (
                         <button
@@ -656,7 +683,6 @@ function App() {
                         />
                     ))}
                 </div>
-
                 <button
                     className="nav-button next"
                     onClick={nextSlide}

@@ -15,8 +15,8 @@
 }
 
 @font-face {
-  font-family: 'Caveat';
-  src: url('https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&display=swap');
+  font-family: 'Monserat';
+  src: url('/public/fonts/Montserrat-Regular.ttf') format('ttf');
   font-weight: 400;
   font-style: normal;
 }
@@ -408,8 +408,9 @@ html, body {
 
 .character-name-dis {
     font-size: 1.4vw;
-    font-weight: 700;
+    font-weight: 500;
     color: #1a1a2e;
+    text-align: left;
 }
 
 /* Слайд для сторис */
@@ -626,6 +627,7 @@ html, body {
 @media (max-width: 480px) {
     .character-name-dis {
     font-size: 4.4vw;
+    text-align: left;
     }
 
   .navigation{
@@ -686,10 +688,16 @@ html, body {
   .share-story-button{
       top: 30% !important;
   }
-  .white-pill, .white-pill-name{
+  .white-pill-name{
+      position: static !important;
+      font-size: 4.7vw !important;
+  }
+
+  .white-pill-first{
       position: static !important;
       font-size: 25px !important;
   }
+
   .first-exp-figma {
     width: 100%;
     height: 100%;
@@ -713,7 +721,7 @@ html, body {
       font-size: 35px !important;
   }
   .exp-date{
-      font-size: 24px !important;
+      font-size: 20px !important;
   }
 
 }
@@ -891,6 +899,21 @@ html, body {
   position: absolute;
 }
 
+.white-pill-first{
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 14px 22px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #000;
+  text-align: center;
+  max-width: 100%;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+  position: absolute;
+  left: -5%;
+  bottom: 74%;
+}
+
 /* Фото */
 .figma-photo-wrapper {
   width: 100%;
@@ -996,7 +1019,9 @@ html, body {
   height: 100%;
 }
 
-
+.big-number-days{
+    margin-right: 30px;
+}
 
 
 
